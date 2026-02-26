@@ -4,6 +4,7 @@ package com.mauricio.moneyflow.service;
 import com.mauricio.moneyflow.dto.UserRequestDTO;
 import com.mauricio.moneyflow.dto.UserResponseDTO;
 import com.mauricio.moneyflow.entity.User;
+import com.mauricio.moneyflow.exception.EntityNotFoundException;
 import com.mauricio.moneyflow.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -41,7 +42,7 @@ public class UserService {
 
     public UserResponseDTO findById(UUID id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Usuario não encontrado"));
         return new UserResponseDTO(user.getId(), user.getName(), user.getEmail());
 
     }
@@ -49,7 +50,7 @@ public class UserService {
 
     public UserResponseDTO update(UUID id, UserRequestDTO userRequestDTO) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Usuario não encontrado"));
 
         user.setName(userRequestDTO.getName());
         user.setEmail(userRequestDTO.getEmail());
@@ -62,7 +63,7 @@ public class UserService {
 
     public void deleteById(UUID id) {
         userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Usuario não encontrado"));
         userRepository.deleteById(id);
     }
 }

@@ -5,6 +5,7 @@ import com.mauricio.moneyflow.dto.TransactionResponseDTO;
 import com.mauricio.moneyflow.entity.Category;
 import com.mauricio.moneyflow.entity.Transaction;
 import com.mauricio.moneyflow.entity.User;
+import com.mauricio.moneyflow.exception.EntityNotFoundException;
 import com.mauricio.moneyflow.repository.CategoryRepository;
 import com.mauricio.moneyflow.repository.TransactionRepository;
 import com.mauricio.moneyflow.repository.UserRepository;
@@ -25,9 +26,9 @@ public class TransactionService {
 
     public TransactionResponseDTO create(TransactionRequestDTO transactionRequestDTO){
         User user = userRepository.findById(transactionRequestDTO.getUserId())
-                .orElseThrow(() -> new RuntimeException("Usuario não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Usuario não encontrado"));
         Category category = categoryRepository.findById(transactionRequestDTO.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
+                .orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada"));
         Transaction transaction = Transaction.builder()
                 .value(transactionRequestDTO.getAmount())
                 .type(transactionRequestDTO.getType())
@@ -64,7 +65,7 @@ public class TransactionService {
 
     public TransactionResponseDTO findById(UUID id) {
         Transaction transaction = transactionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Transação não encontrada"));
+                .orElseThrow(() -> new EntityNotFoundException("Transação não encontrada"));
         return new TransactionResponseDTO(
                 transaction.getId(),
                 transaction.getValue(),
@@ -78,11 +79,11 @@ public class TransactionService {
 
     public TransactionResponseDTO update(UUID id, TransactionRequestDTO transactionRequestDTO) {
         User user = userRepository.findById(transactionRequestDTO.getUserId())
-                .orElseThrow(() -> new RuntimeException("Usuario não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Usuario não encontrado"));
         Category category = categoryRepository.findById(transactionRequestDTO.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
+                .orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada"));
         Transaction transaction = transactionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Transação não encontrada"));
+                .orElseThrow(() -> new EntityNotFoundException("Transação não encontrada"));
         transaction.setValue(transactionRequestDTO.getAmount());
         transaction.setType(transactionRequestDTO.getType());
         transaction.setDescription(transactionRequestDTO.getDescription());
@@ -104,7 +105,7 @@ public class TransactionService {
 
     public void delete(UUID id) {
         transactionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Transação não encontrada"));
+                .orElseThrow(() -> new EntityNotFoundException("Transação não encontrada"));
         transactionRepository.deleteById(id);
 
     }
